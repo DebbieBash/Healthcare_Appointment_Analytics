@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_patients
+    description: "Cleaned patient demographics."
+    columns:
+      - name: patient_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_doctors
+    description: "Cleaned provider roster."
+    columns:
+      - name: doctor_id
+        tests:
+          - unique
+          - not_null

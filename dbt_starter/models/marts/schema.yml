@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: fct_appointments
+    description: "One row per appointment slot with canonical status, no-show flag and reschedule chain resolution."
+    columns:
+      - name: appointment_id
+        description: "Unique appointment identifier."
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        description: "Foreign key to stg_patients."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_patients')
+              field: patient_id
+      - name: final_status
+        description: "Canonical status after cleaning and chain resolution."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['attended', 'no_show', 'rescheduled', 'cancelled_patient', 'cancelled_clinic', 'cancelled_unknown', 'flagged_dq']
+
+  - name: dim_flagged_dq
+    description: "Daily work queue of ambiguous appointments requiring human review."
+    columns:
+      - name: appointment_id
+        description: "Unique appointment identifier."
+        tests:
+          - not_null
+
+  - name: dim_patient_engagement
+    description: "Patient-grain engagement metrics and no-show risk signal."
+    columns:
+      - name: patient_id
+        description: "Unique patient identifier."
+        tests:
+          - unique
+          - not_null
